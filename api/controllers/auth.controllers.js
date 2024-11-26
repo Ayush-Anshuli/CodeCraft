@@ -1,6 +1,8 @@
 import User from "../models/user.models.js";
 import bcryptjs from 'bcryptjs'
 import { errorHandle } from "../utils/error.js";
+
+
 export const signup = async (req,res,next) => {
     const {username , email, password} = req.body;
 
@@ -21,6 +23,6 @@ export const signup = async (req,res,next) => {
         await newUser.save();
         res.json({message :"Signup successfull"})
     } catch (error) {
-        next(errorHandle(500 , "Internal server problem"))
+        next(error)
     }
 }
