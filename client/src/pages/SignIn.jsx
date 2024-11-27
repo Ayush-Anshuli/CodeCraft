@@ -1,45 +1,56 @@
 import { Alert, Button, Label, Spinner, TextInput } from 'flowbite-react'
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import {useDispatch , useSelector} from 'react-redux'
 // import { serverURL } from '../../../api/utils/serverUrl';
+
+
+import {signInStart,signInSuccess,signInFailure} from '../redux/user/userSlice'
 function SignIn() {
 
   const [formData , setFormData] = useState({});
-  const [errorMessage , setErrorMessage] = useState(null)
-  const [loading , setLoading] = useState(false)
+  // const [errorMessage , setErrorMessage] = useState(null)
+  // const [loading , setLoading] = useState(false)
+  const {loading , error : errorMessage} = useSelector(state => state.user)
+
   const navigate = useNavigate();
+  const dispatch = useDispatch()
+
+  // CHANGING AUR WRITING ON THE INPUT FIELDS
   const handleChange = (e) => {
     setFormData({...formData, [e.target.id]:e.target.value.trim() });
   }
 
+  // FUNCTION FOR SUBMITING THE DETAILS FROM THE INPUT FILEDS TO THE DATABASE
   const handleSubmit = async (e) => {
     e.preventDefault();
     if(!formData.email || !formData.password) {
-      return setErrorMessage("Please fill out all fields")  //if any fields are empty
+      return dispatch(signInFailure('All fields are required')) //if any fields are empty
     }
 
     try {
-      setLoading(true);
-      setErrorMessage(null)
+
+      dispatch(signInStart())   // FUNCTION IS WRIITEN IN THE USERSLICE PAGE IT WILL HANDLE THE ERROR AND LOADING
+
       const res = await fetch('/api/auth/signin',{
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(formData),
       });
 
+
       const data = await res.json();
+
       if(data.success === false) {
-        return setErrorMessage(data.message);  // if user already exists in the database 
+        dispatch(signInFailure(data.message));  // if user already exists in the database 
       }
 
-      setLoading(false)
       if(res.ok) {
+        dispatch(signInSuccess(data))   //IF EVERY THING IS CORRECT THE WE WILL DISPATCH SIGNIN SUCCESS
         navigate('/')
       }
     } catch (error) {
-      console.log(error)
-      setErrorMessage(error.message)
-      setLoading(false)
+      dispatch(signInFailure(error.message))
     }
   }
   // console.log(formData)
