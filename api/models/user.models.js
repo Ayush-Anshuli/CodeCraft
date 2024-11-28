@@ -15,6 +15,11 @@ const userSchema = new mongoose.Schema({
         type:String,
         required:true
     },
+    profilePicture : {
+        type:String,
+        // If user profile doesnot exist then default will be shown
+        default : 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png'
+    }
 },{timestamps:true}    //IT SHOWS TIME OF CREATION AND UPDATE
 )
 
