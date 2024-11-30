@@ -3,7 +3,7 @@ import userReducer from "./user/userSlice"
 import { persistReducer} from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
 import persistStore from 'redux-persist/es/persistStore'
-
+import themeReducer from './theme/themeSlice'
 // COMBINEREDUCERS -> IT COMBINES MORE THAN ONE REDUCER
 
 // redux persist -> its a important term on refreshing the web page the details of the user gets null to store the details we use persist redux functionality
@@ -11,6 +11,7 @@ import persistStore from 'redux-persist/es/persistStore'
 
 const rootReducer = combineReducers ({
   user:userReducer,
+  theme:themeReducer
 })
 
 // Way Of Writin "We have to use persistor and persistgate in main.js "

@@ -19,7 +19,7 @@ function OAuth() {
 
     try {
       const resultFromGoogle = await signInWithPopup(auth,provider)
-      // console.log(resultFromGoogle)  Sending all these google information to the backend
+      //console.log(resultFromGoogle)  //Sending all these google information to the backend
       const googledata = await fetch('/api/auth/google', {
         method:"POST",
         headers:{'Content-Type' : 'application/json'},
@@ -30,14 +30,14 @@ function OAuth() {
           googlePhotoUrl : resultFromGoogle.user.photoURL,
         })
       })
-      const data = googledata.json();
+      const data = await googledata.json();
 
       if(data.success === false) {
         dispatch(signInFailure(data.message))
       }
 
       if(googledata.ok) {
-        dispatch(signInSuccess(googledata));
+        dispatch(signInSuccess(data));
         navigate('/')
       }
     } catch (error) {
