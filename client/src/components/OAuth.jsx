@@ -19,6 +19,7 @@ function OAuth() {
 
     try {
       const resultFromGoogle = await signInWithPopup(auth,provider)
+      
       //console.log(resultFromGoogle)  //Sending all these google information to the backend
       const googledata = await fetch('/api/auth/google', {
         method:"POST",

@@ -52,7 +52,9 @@ function Header() {
                                 Sign out
                             </Dropdown.Item>
                         </Dropdown>
-                    ): (
+                    ):
+                    
+                    (
                     <Link to={'/signIn'}>
                         <Button gradientDuoTone='purpleToBlue' color='gray' outline>
                             Sign In
