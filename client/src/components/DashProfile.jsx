@@ -6,7 +6,7 @@ import { MdOutlineMailOutline } from "react-icons/md";
 import { RiLockPasswordLine } from "react-icons/ri";
 import {deleteUserFailure, deleteUserStart, deleteUserSuccess, signoutsuccess, updateFailure, updateStart, updateSuccess} from '../redux/user/userSlice'
 import { RiErrorWarningLine } from "react-icons/ri";
-
+import {Link} from 'react-router-dom'
 
 function DashProfile() {
     const { currentUser,error } = useSelector(state => state.user)
@@ -145,6 +145,16 @@ function DashProfile() {
                 <Button type='submit' gradientDuoTone='purpleToBlue' outline>
                     Update
                 </Button>
+
+                {
+                    currentUser.isAdmin && (
+                        <Link to='/CreatePost'>  
+                            <Button type='button' gradientDuoTone='purpleToPink' className='w-full' >
+                                Create a post
+                            </Button>
+                        </Link>
+                    )
+                }
 
             </form>
             <div className='flex justify-between mt-5 font-bold '>
