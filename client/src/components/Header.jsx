@@ -1,9 +1,10 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {Avatar, Button, Dropdown, Navbar, TextInput} from "flowbite-react"
 import { Link,useLocation } from 'react-router-dom'
 import { FaMoon, FaSearch, FaSun } from "react-icons/fa";
 import {useDispatch, useSelector} from "react-redux";
 import { ToggleTheme } from '../redux/theme/themeSlice';
+import { signoutsuccess } from '../redux/user/userSlice';
 
 function Header() {
     const path = useLocation().pathname
@@ -11,6 +12,23 @@ function Header() {
 
     const {theme} = useSelector(state => state.theme)
     const dispatch = useDispatch()
+
+    const handleSignout = async () => {
+        try {
+            const res = await fetch('/api/user/signout',{
+                method:'POST'
+            })
+
+            const data = await res.json()
+            if( !res.ok ) {
+                console.log(data.message)
+            }else {
+                dispatch(signoutsuccess())
+            }
+        } catch (error) {
+            
+        }
+    }
     
   return (
     <>
@@ -48,7 +66,7 @@ function Header() {
                                 <Dropdown.Item>Profile</Dropdown.Item>
                             </Link>
                         <Dropdown.Divider/>
-                            <Dropdown.Item>
+                            <Dropdown.Item onClick={handleSignout}>
                                 Sign out
                             </Dropdown.Item>
                         </Dropdown>

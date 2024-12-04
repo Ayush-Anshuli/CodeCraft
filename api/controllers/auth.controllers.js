@@ -43,7 +43,8 @@ export const signin = async (req,res,next) => {
         }
         // If cedentials are correct then we sigin the user for that we are using jwt
     
-        const token = jwt.sign({id: validUser._id},process.env.JWT_SECRET)
+        const token = jwt.sign({id: validUser._id, isAdmin: validUser.isAdmin},process.env.JWT_SECRET)
+
         const {password: pass, ...rest} = validUser._doc // IT WILL HIDE THE PASSWORD WHEN TRYING TO FETCH THE DATA FROM THE MONGO DB
         res.status(200).cookie('access_token',token,{httpOnly: true}).json(rest)
     }
@@ -59,7 +60,7 @@ export const google = async(req,res,next) => {
         const user = await User.findOne({email});
         // LOGIC IF THE USER EXISTS
         if(user) {
-            const token = jwt.sign({id: user._id},process.env.JWT_SECRET);
+            const token = jwt.sign({id: user._id, isAdmin: user.isAdmin},process.env.JWT_SECRET);
 // IT SEPARATES THE PASSWORD AND THE REST ONE
            const {password , ...rest} = user._doc
             res.status(200).cookie('access_token', token , {
@@ -80,7 +81,7 @@ export const google = async(req,res,next) => {
                 profilePicture : googlePhotoUrl,
             })
             await newUser.save();
-            const token = jwt.sign({id:newUser._id},process.env.JWT_SECRET)
+            const token = jwt.sign({id:newUser._id, isAdmin: user.isAdmin},process.env.JWT_SECRET)
             const {password , ...rest} = newUser._doc
 
             res.status(200).cookie('access_token',token,{
@@ -91,3 +92,6 @@ export const google = async(req,res,next) => {
         next(error)
     }
 }
+
+
+

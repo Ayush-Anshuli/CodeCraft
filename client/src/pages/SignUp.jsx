@@ -77,7 +77,7 @@ function SignUp() {
                    </div>
 
                    <div>
-                    <Label value='Your username' />
+                    <Label value='Your Password' />
                     <TextInput type='password'  placeholder='Password' id='password' onChange={handleChange}/>
                    </div>
                    <Button gradientDuoTone='purpleToPink' type='submit' disabled={loading}>
