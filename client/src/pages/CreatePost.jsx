@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { Button, FileInput, Select, TextInput } from 'flowbite-react';
+import { Alert, Button, FileInput, Select, TextInput } from 'flowbite-react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { supabase } from '../supabaseClient';
 import { CircularProgressbar } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
+import {useNavigate} from 'react-router-dom'
 
 function CreatePost() {
   const [file, setFile] = useState(null); // Store selected file
@@ -12,7 +13,12 @@ function CreatePost() {
   const [formData, setFormData] = useState({}); // Store form data
   const [uploadProgress, setUploadProgress] = useState(0); // Track upload progress
   const [isUploading, setIsUploading] = useState(false); // Disable button during upload
+  const [publishError , setPublishError] = useState(null)
 
+  const navigate = useNavigate()
+
+
+  // IMAGE UPLOAD FUNCTIONALITY VERY IMPORTANT 
   const handleUploadImage = async () => {
     try {
       if (!file) {
@@ -75,14 +81,51 @@ function CreatePost() {
     }
   };
 
+  const handlePublishAllData = async(e) => {
+    e.preventDefault()
+    try {
+      const res = await fetch('/api/post/create',{
+        method:'POST',
+        headers : {
+          'Content-Type' : 'application/json',
+        },
+        body:JSON.stringify(formData)
+      })
+
+      const data = await res.json();
+
+      if(!res.ok) {
+        setPublishError(data.message)
+        return
+      }
+      // if(data.success === false) {
+      //   setPublishError(data.message)
+      //   return
+      // }
+      if(res.ok) {
+        setPublishError(null)
+        navigate(`/post/${data.slug}`)
+      }
+    } catch (error) {
+      setPublishError('Something Went Wrong')
+    }
+  }
+
+
+
+
+
+
+
+
   return (
     <div className="p-3 max-w-3xl mx-auto min-h-screen">
       <h1 className="text-center text-3xl my-7 font-semibold">Create a Post</h1>
-      <form className="flex flex-col gap-4">
+      <form className="flex flex-col gap-4" onSubmit={handlePublishAllData}>
         {/* Title and Category */}
         <div className="flex flex-col gap-4 sm:flex-row justify-between">
-          <TextInput type="text" placeholder="Title" required id="title" className="flex-1" />
-          <Select>
+          <TextInput type="text" placeholder="Title" required id="title" className="flex-1" onChange={(e) => setFormData({...formData, title:e.target.value})}/>
+          <Select onChange={(e) => setFormData({...formData, category:e.target.value})}>
             <option value="uncategorized">Select a category</option>
             <option value="javascript">JavaScript</option>
             <option value="react">React Js</option>
@@ -133,13 +176,22 @@ function CreatePost() {
         )}
 
         {/* Rich Text Editor */}
-        <ReactQuill theme="snow" placeholder="Write Something..." className="h-72 mb-12" required />
+        <ReactQuill theme="snow" placeholder="Write Something..." className="h-72 mb-12" required 
+        onChange={(value) => {
+          setFormData({...formData, content:value});
+        }}
+        />
 
         {/* Publish Button */}
         <Button type="submit" gradientDuoTone="purpleToPink" outline className='mb-12
         '>
           Publish
         </Button>
+        {
+          publishError && <Alert className='mt-5' color='failure'>
+            {publishError}
+          </Alert>
+        }
       </form>
     </div>
   );
