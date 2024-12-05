@@ -5,6 +5,7 @@ import userRoute from './routes/user.route.js'
 import authRoute from './routes/auth.route.js'
 import cors from 'cors'
 import cookieParser from "cookie-parser";
+import postRoutes from './routes/post.route.js'
 dotenv.config()
 
 mongoose.connect(process.env.MONGO)
@@ -26,6 +27,7 @@ app.listen(3000,()=>{
 
 app.use('/api/user',userRoute)
 app.use('/api/auth',authRoute)
+app.use('/api/post',postRoutes)
 app.use(cors)
 
 // MIDDLEWARES
