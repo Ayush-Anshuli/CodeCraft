@@ -10,6 +10,8 @@ import Footer from "./components/Footer"
 import PrivateRoute from './components/PrivateRoute'
 import AdminPrivateRoute from "./components/AdminPrivateRoute"
 import CreatePost from "./pages/CreatePost"
+import UpdatePost from "./pages/UpdatePost"
+import PostPage from "./pages/PostPage"
 function App() {
 
   return (
@@ -22,11 +24,17 @@ function App() {
             <Route path="/projects" element = {<Projects/>} />
             <Route path="/signin" element = {<SignIn/>} />
             <Route path="/signup" element = {<SignUp/>} />
+
             <Route element={<PrivateRoute/>}>
-            <Route path="/dashboard" element = {<Dashboard/>} />
-            <Route element={<AdminPrivateRoute/>} />
-            <Route path="/CreatePost" element={<CreatePost/>} />
+              <Route path="/dashboard" element = {<Dashboard/>} />
+              <Route element={<AdminPrivateRoute/>} />
+              <Route path="/CreatePost" element={<CreatePost/>} />
+              <Route path="/update-post/:postId" element={<UpdatePost/>}/>
+             
             </Route>
+
+            <Route path="/post/:slug" element={<PostPage/>} />
+
           </Routes>
         <Footer/>
       </BrowserRouter>

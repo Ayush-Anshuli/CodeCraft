@@ -98,10 +98,7 @@ function CreatePost() {
         setPublishError(data.message)
         return
       }
-      // if(data.success === false) {
-      //   setPublishError(data.message)
-      //   return
-      // }
+
       if(res.ok) {
         setPublishError(null)
         navigate(`/post/${data.slug}`)

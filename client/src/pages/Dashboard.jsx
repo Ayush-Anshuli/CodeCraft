@@ -2,6 +2,9 @@ import React, { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import DashSideBar from '../components/DashSideBar';
 import DashProfile from '../components/DashProfile';
+import DashPost from '../components/DashPost';
+import DashUsers from '../components/DashUsers';
+
 
 function Dashboard() {
   const location = useLocation();
@@ -25,6 +28,10 @@ function Dashboard() {
           </div>
           {/* Profile if the tab is equal to the profile then we wiill show the dashprofile */}
           {tab === 'profile' && <DashProfile/>}
+
+          {tab === 'posts' && <DashPost/>}
+
+          {tab === 'users' && <DashUsers/>}
         </div>
 
    

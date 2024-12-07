@@ -1,6 +1,7 @@
 import { errorHandle } from '../utils/error.js';
 import bcryptjs from 'bcryptjs';
 import User from '../models/user.models.js';
+import { parse } from 'dotenv';
 
 export const test =  (req,res) => { res.json({message : "API is working"}) }
 // UPDATE PROFILE FUNCTIONALITY BACKEND ROUTE
@@ -55,7 +56,7 @@ export const updateUser = async (req, res, next) => {
 // DELETE ACCOUNT FUNCTIONALITY ROUTE
 
 export const deleteUser = async (req,res,next) => {
-  if(req.user.id !== req.params.userId) {
+  if( !req.user.isAdmin && req.user.id !== req.params.userId) {
     return next(errorHandle(403,'You are not allowed to delete this user account'))
   }
 
@@ -76,3 +77,49 @@ export const signout = (req,res,next) => {
     next(error)
   }
 }
+
+// ALL USERS FOR THE ADMIN PAGE
+
+export const getusers = async(req,res,next) => {
+  if( !req.user.isAdmin) {
+    return next(errorHandle(403,'You are not allow to see all the users'))
+  }
+  try {
+    const startIndex = parseInt(req.query.startIndex) || 0;
+    const limit = parseInt(req.query.limit) || 9
+    const sortDirection = req.query.sort === 'asc' ? 1 : -1
+
+    const users = await User.find()   //}
+    .sort({createdAt: sortDirection}) //}
+    .skip(startIndex)                 //} -->> This will all the users name including all the passwords 
+    .limit(limit)                     //}      so we have to remove the password
+
+    const UsersWithoutPassword = users.map((user) => {
+      const {password, ...rest} = user._doc
+      return rest;
+    })
+
+    const totalUsers = await User.countDocuments();
+
+    const now = new Date();
+
+    const oneMonthAgo = new Date(
+      now.getFullYear(),
+      now.getMonth() - 1,
+      now.getDate()
+    );
+    const lastMonthUsers = await User.countDocuments({
+      createdAt: { $gte: oneMonthAgo },
+    });
+
+    res.status(200).json({
+      users: UsersWithoutPassword,
+      totalUsers,
+      lastMonthUsers,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// deleteUser on the Admin page
