@@ -126,6 +126,17 @@ function CreatePost() {
             <option value="uncategorized">Select a category</option>
             <option value="javascript">JavaScript</option>
             <option value="react">React Js</option>
+            <option value="next">Next Js</option>
+            <option value="node">Node Js</option>
+            <option value="typescript">TypeScript</option>
+            <option value="docker">Docker</option>
+            <option value="ai">Artificial Intelligence</option>
+            <option value="software">Software Development</option>
+            <option value="css">CSS</option>
+            <option value="webdevelopment">Web Development</option>
+            <option value="androiddevelopment">Android Development</option>
+            <option value="kotlin">Kotlin</option>
+            <option value="flutter">Flutter</option>
           </Select>
         </div>
 

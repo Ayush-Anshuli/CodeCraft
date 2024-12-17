@@ -3,10 +3,16 @@ import mongoose from "mongoose";
 import dotenv from "dotenv"
 import userRoute from './routes/user.route.js'
 import authRoute from './routes/auth.route.js'
+import commentRoutes from './routes/comment.route.js';
+
 import cors from 'cors'
 import cookieParser from "cookie-parser";
 import postRoutes from './routes/post.route.js'
-dotenv.config()
+import path from 'path'
+dotenv.config()  // dotenv.config() reads a .env file, parses its contents,
+                //  and assigns it to the process.env object. 
+                //It returns an object with a parsed key containing the loaded 
+                //content or an error key if it failed
 
 mongoose.connect(process.env.MONGO)
 .then(() => {   
@@ -15,6 +21,8 @@ mongoose.connect(process.env.MONGO)
 .catch((err) => {
     console.log(err)
 })
+
+const __dirname = path.resolve();  //WE ARE WRITING THIS SO WE CAN RENDER THE PROJECT
 
 const app = express();
 
@@ -28,6 +36,17 @@ app.listen(3000,()=>{
 app.use('/api/user',userRoute)
 app.use('/api/auth',authRoute)
 app.use('/api/post',postRoutes)
+app.use('/api/comment', commentRoutes);
+
+// {  THIS WE ARE USING BECAUSE WE CAN DEPLOY THE FULL STACK PROJECT ON RENDER
+
+app.use(express.static(path.join(__dirname , '/client/dist')))
+app.get('*',(req,res) => {
+    res.sendFile(path.join(__dirname,'client','dist','index.html'))
+})
+// }
+
+
 app.use(cors)
 
 // MIDDLEWARES

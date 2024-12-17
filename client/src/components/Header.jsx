@@ -1,17 +1,36 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {Avatar, Button, Dropdown, Navbar, TextInput} from "flowbite-react"
-import { Link,useLocation } from 'react-router-dom'
+import { Link,useLocation, useNavigate } from 'react-router-dom'
 import { FaMoon, FaSearch, FaSun } from "react-icons/fa";
 import {useDispatch, useSelector} from "react-redux";
 import { ToggleTheme } from '../redux/theme/themeSlice';
 import { signoutsuccess } from '../redux/user/userSlice';
 
+
 function Header() {
     const path = useLocation().pathname
     const {currentUser} = useSelector(state => state.user )
 
+    const [serachTerm,setsearchTerm] = useState('')
+    // const location = useLocation()
+    const navigate = useNavigate()
+
     const {theme} = useSelector(state => state.theme)
     const dispatch = useDispatch()
+
+
+
+
+    useEffect(() => {
+            const urlParams = new URLSearchParams(location.search);
+            const searchTermFromUrl = urlParams.get('serachTerm')
+
+            if(searchTermFromUrl) {
+                setsearchTerm(searchTermFromUrl)
+            }
+    },[location.search])
+
+    // console.log(serachTerm)
 
     const handleSignout = async () => {
         try {
@@ -29,6 +48,15 @@ function Header() {
             
         }
     }
+
+    const handleSubmit =(e) => {
+        e.preventDefault()
+        const urlParams = new URLSearchParams(location.search)
+        urlParams.set('searchTerm',serachTerm);
+        const searchQuery = urlParams.toString()   /// conver the url to the string
+
+        navigate(`/search?${searchQuery}`)
+    }
     
   return (
     <>
@@ -37,12 +65,14 @@ function Header() {
                     <span className='px-2 py-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-lg text-white'>Code</span> Craft
             </Link>
 
-            <form>
-                <TextInput type='text' placeholder='Search' rightIcon={FaSearch} className='hidden lg:inline'/>
+            <form onSubmit={handleSubmit}>
+                <TextInput type='text' placeholder='Search' rightIcon={FaSearch} className='hidden lg:inline' value={serachTerm} onChange={(e) => setsearchTerm(e.target.value)}/>
             </form>
-            <Button className='w-12 h-10 lg:hidden' color='gray' pill>
+          
+            <Button className='w-12 h-10 lg:hidden' color='gray' pill onClick={() => navigate("/search")}>
                 <FaSearch/>
             </Button>
+    
 
             <div className='flex gap-2 md:order-2'>
                 <Button className='w-12 h-10 sm:inline' color='gray' pill onClick={() => dispatch(ToggleTheme())}>

@@ -43,8 +43,17 @@ function DashSideBar() {
          <Sidebar className='w-full md:w-56 '>
                <Sidebar.Items >
                      <Sidebar.ItemGroup >
+                     {
+                        currentUser.isAdmin && (
+                           <Link to={'/dashboard?tab=dash'}>
+                           <Sidebar.Item active={tab === 'dash'} className='cursor-pointer mt-3'  labelColor='dark' icon={TiDocumentText } >
+                              Dashboard
+                           </Sidebar.Item>
+                        </Link>
+                        )
+                       }
                         <Link to={'/dashboard?tab=profile'}>
-                           <Sidebar.Item active={tab === 'profile'} className='cursor-pointer' label={currentUser.isAdmin ?'Admin':'profile'} labelColor='dark' icon={FaUser }>
+                           <Sidebar.Item active={tab === 'profile'} className='cursor-pointer mt-3' label={currentUser.isAdmin ?'Admin':'profile'} labelColor='dark' icon={FaUser }>
                               Profile
                            </Sidebar.Item>
                         </Link>

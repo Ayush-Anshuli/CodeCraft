@@ -108,31 +108,31 @@ function UpdatePost() {
 
     const handlePublishAllData = async (e) => {
         e.preventDefault();
+    
         try {
-            const res = await fetch(`/api/post/updatepost/${formData._id}/${currentUser._id}`, {
+            console.log("Form data being sent:", formData); // Log to check the data
+            
+            const res = await fetch(`/api/post/updatepost/${postId}/${currentUser._id}`, { // Make sure postId is passed here
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(formData),
             });
+    
             const data = await res.json();
             if (!res.ok) {
                 setPublishError(data.message);
                 return;
             }
     
-            if (res.ok) {
-                setPublishError(null);
-                console.log('Update successful, navigating to:', `/post/${data.slug}`);
-                navigate(`/post/${data.slug}`);
-            }
+            setPublishError(null);
+            navigate(`/post/${data.slug}`); // Redirect to the updated post page
         } catch (error) {
-            console.error('Error updating post:', error);
-            setPublishError('Something went wrong');
+            setPublishError('Something went wrong while updating the post');
         }
     };
-    
+     
 
 
 
